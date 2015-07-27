@@ -1,0 +1,21 @@
+{
+  "name": "PururinTime",
+  "main": "./html/index.html",
+  "window": {
+    "title": "PururinTime",
+    "icon": "link.png",
+    "toolbar": true,
+    "frame": true,
+    "width": 1100,
+    "height": 700,
+    "position": "mouse",
+    "min_width": 400,
+    "min_height": 200
+  },
+  "dependencies": {
+    "ani-up": "0.0.1",
+    "handlebars": "^3.0.3",
+    "irc": "^0.3.12",
+    "xdcc": "^0.2.1"
+  }
+}

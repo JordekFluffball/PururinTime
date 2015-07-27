@@ -1,0 +1,17 @@
+.hover-select:hover{
+	background-color: #B2E6FFue;
+	cursor: pointer;
+}
+
+.cursor-pointer{
+	cursor: pointer;
+}
+
+.puruin-background{
+	background: url("../img/background.jpg") no-repeat 50% 50% fixed; 
+	background-size: cover;
+}
+
+.button-row{
+	height: 50px;
+}
