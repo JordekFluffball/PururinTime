@@ -9,8 +9,12 @@ var hummingbird = aniup.hummingbird;
 var views = {
       search: "html/search.html",
       results: "html/results.html",
-      profile: "html/profile.html"
+      profile: "html/profile.html",
+      about: "html/about.html",
+      downloads: "html/downloads.html",
+      settings: "html/settings.html"
     };
+var currentView;
 
 var downloadPath= "./Downloads";
 
@@ -31,7 +35,7 @@ win.menu = nativeMenuBar;
 
 
 //IRC setup
-var user = 'PururinTime';
+var user = 'PururinTime' + Math.random().toString(36).substr(7, 3);
 
 // Set IRC configuration
 var config = {
@@ -48,6 +52,10 @@ var config = {
 };
 
 var joinSuccess = false;
+//{botname: botname, pack: pack, size: size, filename: filename}
+var XDCCQueue = [];
+var currentDownload = {};
+var completed = [];
 var client = new irc.Client(config.server, config.nick, config.options);
 client.connect();
 console.log("-- CONNECTING TO " + config.server + " AS " + config.nick);
@@ -60,24 +68,44 @@ client.on('join', function (channel, nick, message) {
     }
 });
 
+var totalData, progress, progressDecimal;
+
 //XDCC handlers
 client.on('xdcc-connect', function(meta) {
   console.log('Connected: ' + meta.ip + ':' + meta.port);
-  console.log(meta.length);
+  //console.log(meta.length);
+  totalData = meta.length;
 
 });
 
 client.on('xdcc-data', function(received) {
   //console.log('Receiving Data');
+  progress = received;
+  progressDecimal = progress/totalData;
 });
 
 function cancelXDCC(botname){
 	//client.emit('xdcc-cancel', nick);
 	client.say(botname, "XDCC CANCEL");
+  //queue up next
+  //delete this file's data
 }
 
 client.on('xdcc-end', function(received) {
-  console.log('Download completed');
+  console.log('Download completed, starting next in queue');
+  completed.push(currentDownload);
+  currentDownload = {};
+  downloadNextInQueue();
+  //loadView not in scope!
+  /*if (currentView == views.downloads) {
+    var downloading;
+    if(jQuery.isEmptyObject(currentDownload)){
+      downloading = null;
+    } else {
+      downloading = currentDownload;
+    }
+    loadView(views.downloads, {XDCCQueue: XDCCQueue, currentDownload: downloading, completed: completed});
+  }*/
 });
 
 client.on('notice', function(from, to, message) {
@@ -90,19 +118,43 @@ client.on('error', function(message) {
   console.error(message);
 });
 
+function downloadNextInQueue(){
+  console.log("downloading next in queue");
+  console.log(XDCCQueue);
+  console.log(currentDownload);
+  console.log(completed);
+  if (XDCCQueue.length > 0) {
+    console.log("Queue length > 0, getXdcc");
+    currentDownload = XDCCQueue.shift();
+    console.log(currentDownload);
+    client.getXdcc(currentDownload.botname, 'xdcc send #' + currentDownload.pack, downloadPath);
+  } else {
+    console.log("queue is empty, ending queue chain");
+  }
+}
+
+
 var userSearchString = '';
 
 //wait for jQuery
 $(document).ready(function () {
-  function loadView(view, context){
-    fs.readFile(view, 'utf-8', function(error, source){
+  function loadView(viewPath, context){
+    currentView = viewPath;
+    fs.readFile(viewPath, 'utf-8', function(error, source){
       var template = handlebars.compile(source);
       $("#view").html(template(context));
-      if(view == views.search){
+      if(viewPath == views.search){
         $('body').addClass('puruin-background');
       } else {
         $('body').removeClass('puruin-background');
       }
+      var progressInterval
+      if(viewPath == views.downloads){
+        progressInterval = setInterval(function(){
+         $('#view').find('.progress-bar').css('width', (progressDecimal * 100) + '%');
+        }, 400);
+        
+      } else {clearInterval(progressInterval);}
     });
   }
   function searchXDCC(term, callback){
@@ -170,6 +222,24 @@ $(document).ready(function () {
     e.preventDefault();
     loadView(views.search, {});
   });
+  $("#about-link").click(function(e) {
+    e.preventDefault();
+    loadView(views.about, {});
+  });
+  $("#settings-link").click(function(e) {
+    e.preventDefault();
+    loadView(views.settings, {});
+  });
+  $("#downloads-link").click(function(e) {
+    e.preventDefault();
+    var downloading;
+    if(jQuery.isEmptyObject(currentDownload)){
+      downloading = null;
+    } else {
+      downloading = currentDownload;
+    }
+    loadView(views.downloads, {XDCCQueue: XDCCQueue, currentDownload: downloading, completed: completed});
+  });
 
   //SEARCH
   $("#view").on('submit', '#search-form',function(e){
@@ -191,6 +261,46 @@ $(document).ready(function () {
                 console.log("No results were found.");
             }
         }
+    });
+    $("#view").on('click', '#lucky',function(e){
+      e.preventDefault();
+      userSearchString = $('#search-field').val();
+
+      hummingbird.search(userSearchString, function(err, results) {
+          if(err) {
+              console.log(err);
+          }
+          else {
+              if(results) {
+                  console.log("results: %o", results);
+                  var firstResult = results[0];
+                  var slug = firstResult.slug;
+                  var searchTerm = slug.replace(/-/g, ' ');
+
+                  searchXDCC(searchTerm, function(packageList){
+                    function loadProfileView(){
+                      loadView(views.profile, {title: firstResult.title, synopsis: firstResult.synopsis, cover_image: firstResult.cover_image, packageList: packageList});
+                    }
+                    if (packageList.length > 0) {
+                      console.log("initial XDCC search successful");
+                      loadProfileView();
+                    } else {
+                      console.log("no initial XDCC results");
+                      tryAlternativeXDCCSearchTerms(searchTerm, function(newPackageList){
+                        console.log("try alternative callback");
+                        packageList = newPackageList;
+                        loadProfileView();
+                      });
+                    }
+                  });
+
+              }
+              else {
+                  console.log("No results were found.");
+              }
+          }
+      });
+
     });
 
     /*var msgArray = XDCCtext.split(" ");
@@ -239,7 +349,17 @@ $(document).ready(function () {
   $("#view").on('click', 'tr',function(){
     var botname = $(this).attr('data-botname');
     var pack = $(this).attr('data-pack');
-    client.getXdcc(botname, 'xdcc send #' + pack, downloadPath);
+    var size = $(this).attr('data-filesize');
+    var filename = $(this).attr('data-filename');
+    var animeToAddToQueue = {botname: botname, pack: pack, size: size, filename: filename};
+    console.log("adding anime to queue: ");
+    console.log(animeToAddToQueue);
+    XDCCQueue.push(animeToAddToQueue);
+    if (XDCCQueue.length == 1 && jQuery.isEmptyObject(currentDownload)) {
+      console.log("queue has one item after add & no current download, starting queue chain");
+      downloadNextInQueue();
+    };
+    //client.getXdcc(botname, 'xdcc send #' + pack, downloadPath);
     $(this).addClass('success');
   });
   $("#view").on('click', '#back-button',function(){
@@ -260,4 +380,7 @@ $(document).ready(function () {
         }
     });
   });
+
+  //DOWNLOADS
+
 });

@@ -1,11 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>PururinTime</title>
-    <script src="../js/jquery-1.11.3.min.js"></script>
-    <script src="../js/main.js"></script>
-</head>
-<body>
-
-</body>
-</html>
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<h1>Downloads (WIP)</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<h2>In Progress</h2>
+			{{#with currentDownload}}
+		        <div class="panel panel-default">
+				  <div class="panel-body">
+				  	<p>{{ botname }} - {{ filename }} ( {{ size }} )</p>
+				    <br>
+				    <div class="progress">
+					  <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" style="width: 0%"></div>
+					</div>
+				  </div>
+				</div>
+		    {{/with}}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<h2>Queue</h2>
+			{{#each XDCCQueue}}
+		        <div class="panel panel-default">
+				  <div class="panel-body">
+				    {{ botname }} - {{ filename }} ( {{ size }} )
+				  </div>
+				</div>
+			{{/each}}
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<h2>Completed</h2>
+			{{#each completed}}
+		        <div class="panel panel-default">
+				  <div class="panel-body">
+				    {{ filename }} ( {{ size }} )
+				  </div>
+				</div>
+			{{/each}}
+		</div>
+	</div>
+</div>
