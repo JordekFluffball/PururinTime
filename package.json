@@ -9,8 +9,8 @@
     "width": 1100,
     "height": 700,
     "position": "mouse",
-    "min_width": 400,
-    "min_height": 200
+    "min_width": 768,
+    "min_height": 300
   },
   "dependencies": {
     "ani-up": "0.0.1",

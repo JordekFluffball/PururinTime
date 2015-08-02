@@ -3,23 +3,44 @@
 <head>
     <title>PururinTime</title>
 
+    <link rel="stylesheet" type="text/css" href="../css/styles.css">
+
     <script src="../js/jquery-1.11.3.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/main.js"></script>
-
+    <script src="../js/underscore-1.8.3-min.js"></script>
+    <script src="../js/backbone-1.2.1-min.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="../css/styles.css">
+
+    <script src="../src/app.js"></script>
+
+    <script src="../src/views/search.js"></script>
+    <script src="../src/views/results.js"></script>
+    <script src="../src/views/profile.js"></script>
+    <script src="../src/views/downloads.js"></script>
+    <script src="../src/views/about.js"></script>
+    <script src="../src/views/settings.js"></script>
+
+    <script src="../src/views/navbar.js"></script>
+    <script src="../src/views/queueItem.js"></script>
+
+    <script src="../src/models/queueItem.js"></script>
+
+    <script src="../src/collections/queue.js"></script>
+
+    <script src="../src/app_start.js"></script>
+
+    <script id="search-template" src="search.html" type="text/x-template"></script>
+    <script id="results-template" src="results.html" type="text/x-template"></script>
+    <script id="profile-template" src="profile.html" type="text/x-template"></script>
+    <script id="about-template" src="about.html" type="text/x-template"></script>
+    <script id="downloads-template" src="downloads.html" type="text/x-template"></script>
+    <script id="settings-template" src="settings.html" type="text/x-template"></script>
+
 </head>
-<body class="puruin-background">
+<body>
 	<nav class="navbar navbar-default" role="navigation">
 		<!-- Brand and toggle get grouped for better mobile display -->
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-			</button>
 			<a class="navbar-brand" id="logo" href="#">PururinTime</a>
 		</div>
 
@@ -33,11 +54,6 @@
 			</ul>
 		</div><!-- /.navbar-collapse -->
 	</nav>
-
-	<div id="view">
-		
-
-	</div>
-
+	<div id="view">Loading...</div>
 </body>
 </html>

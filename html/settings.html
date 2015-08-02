@@ -1,5 +1,20 @@
 <div class="container">
 	<div class="row">
-		<p>WIP. Planned: raw search, bot preferences, download locations, fansub preferences, open vlc, parallel downloading/queueing</p>
+		<p>WIP. Planned: raw search, bot preferences, fansub preferences, open vlc, parallel downloading/queueing</p>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<p>Select download location:</p>
+			<input id="download-directory" type="file" nwdirectory /> <br>"<span id="download-path">{{ downloadPath }}</span>"<br><br>
+			<input id="raw-search" type="checkbox" name="rawSearch" disabled> Raw Search (just search the text you type)<br><br>
+			Maximum number of parallel downloads:
+			<select disabled>
+			  <option value="1">1</option>
+			  <option value="2">2</option>
+			  <option value="3">3</option>
+			  <option value="4">4</option>
+			  <option value="5">5</option>
+			</select>
+		</div>
 	</div>
 </div>
