@@ -3,12 +3,13 @@ PururinTime
 
 A simple gui XDCC anime downloader. Built with Node.JS and node-webkit.
 
-Mac OS X only for now, other platforms coming in the future.
+Being developed on Mac OS X, but should support all platforms.
 
 Screenshots:
 
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Screenshot 1")
-![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Screenshot 2")
+![alt text](https://raw.githubusercontent.com/JordekFluffball/PururinTime/master/screenshot1.jpg "Screenshot 1")
+![alt text](https://raw.githubusercontent.com/JordekFluffball/PururinTime/master/screenshot2.jpg "Screenshot 2")
+![alt text](https://raw.githubusercontent.com/JordekFluffball/PururinTime/master/screenshot3.jpg "Screenshot 3")
 
 
 Running
